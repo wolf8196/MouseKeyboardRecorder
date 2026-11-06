@@ -4,12 +4,25 @@ namespace MouseKeyboardRecorder
 {
     public class MouseInfo
     {
-        public MouseButton Button { get; init; }
+        public MouseInfo(short x, short y)
+            : this(x, y, MouseButton.NoButton, 0)
+        {
+        }
 
-        public ushort ClickSequenceCounter { get; init; }
+        public MouseInfo(short x, short y, MouseButton button, ushort clickSequenceCounter)
+        {
+            X = x;
+            Y = y;
+            Button = button;
+            ClickSequenceCounter = clickSequenceCounter;
+        }
 
-        public short X { get; init; }
+        public short X { get; }
 
-        public short Y { get; init; }
+        public short Y { get; }
+
+        public MouseButton Button { get; }
+
+        public ushort ClickSequenceCounter { get; }
     }
 }

@@ -4,12 +4,30 @@ namespace MouseKeyboardRecorder
 {
     public class Action
     {
-        public ActionType ActionType { get; init; }
+        public Action(ActionType actionType, long offset, MouseInfo mouseInfo)
+            : this(actionType, offset)
+        {
+            MouseInfo = mouseInfo;
+        }
 
-        public long Offset { get; init; }
+        public Action(ActionType actionType, long offset, KeyCode keyCode)
+            : this(actionType, offset)
+        {
+            KeyCode = keyCode;
+        }
 
-        public KeyCode? KeyCode { get; init; }
+        private Action(ActionType actionType, long offset)
+        {
+            ActionType = actionType;
+            Offset = offset;
+        }
 
-        public MouseInfo? MouseInfo { get; init; }
+        public ActionType ActionType { get; }
+
+        public long Offset { get; }
+
+        public KeyCode? KeyCode { get; }
+
+        public MouseInfo? MouseInfo { get; }
     }
 }

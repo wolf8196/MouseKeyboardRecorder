@@ -124,56 +124,22 @@ namespace MouseKeyboardRecorder
 
         private static void OnKeyPress(Stopwatch sw, ConcurrentBag<Action> concurrentQueue, KeyboardHookEventArgs e)
         {
-            concurrentQueue.Add(CreateKeyAction(sw, ActionType.KeyPress, e));
+            concurrentQueue.Add(new Action(ActionType.KeyPress, sw.ElapsedTicks, e.Data.KeyCode));
         }
 
         private static void OnKeyRelease(Stopwatch sw, ConcurrentBag<Action> concurrentQueue, KeyboardHookEventArgs e)
         {
-            concurrentQueue.Add(CreateKeyAction(sw, ActionType.KeyRelease, e));
+            concurrentQueue.Add(new Action(ActionType.KeyRelease, sw.ElapsedTicks, e.Data.KeyCode));
         }
 
         private static void OnMouseMove(Stopwatch sw, ConcurrentBag<Action> concurrentQueue, MouseHookEventArgs e)
         {
-            var action = new Action
-            {
-                ActionType = ActionType.MouseMove,
-                Offset = sw.ElapsedTicks,
-                MouseInfo = new MouseInfo
-                {
-                    X = e.Data.X,
-                    Y = e.Data.Y,
-                }
-            };
-
-            concurrentQueue.Add(action);
+            concurrentQueue.Add(new Action(ActionType.MouseMove, sw.ElapsedTicks, new MouseInfo(e.Data.X, e.Data.Y)));
         }
 
         private static void OnMouseClick(Stopwatch sw, ConcurrentBag<Action> concurrentQueue, MouseHookEventArgs e)
         {
-            var action = new Action
-            {
-                ActionType = ActionType.MouseClick,
-                Offset = sw.ElapsedTicks,
-                MouseInfo = new MouseInfo
-                {
-                    Button = e.Data.Button,
-                    ClickSequenceCounter = e.Data.Clicks,
-                    X = e.Data.X,
-                    Y = e.Data.Y,
-                }
-            };
-
-            concurrentQueue.Add(action);
-        }
-
-        private static Action CreateKeyAction(Stopwatch sw, ActionType actionType, KeyboardHookEventArgs e)
-        {
-            return new Action
-            {
-                ActionType = actionType,
-                Offset = sw.ElapsedTicks,
-                KeyCode = e.Data.KeyCode,
-            };
+            concurrentQueue.Add(new Action(ActionType.MouseClick, sw.ElapsedTicks, new MouseInfo(e.Data.X, e.Data.Y, e.Data.Button, e.Data.Clicks)));
         }
     }
 }
