@@ -4,10 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using SharpHook;
 using SharpHook.Simulation;
 
@@ -17,10 +16,11 @@ namespace MouseKeyboardRecorder
     {
         private static readonly long Ticks15Ms = TimeSpan.FromMilliseconds(15).Ticks;
 
-        private static readonly JsonSerializerOptions Options = new JsonSerializerOptions(JsonSerializerOptions.Default)
+        private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
         {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
-            WriteIndented = true,
+            Formatting = Formatting.Indented,
+            DefaultValueHandling = DefaultValueHandling.Ignore,
+            TypeNameHandling = TypeNameHandling.None,
         };
 
         public static async Task<IReadOnlyCollection<Action>> StartRecording(string? saveToFile = null, CancellationToken token = default)
@@ -44,7 +44,9 @@ namespace MouseKeyboardRecorder
             if (saveToFile != null)
             {
                 using var fs = File.Create(saveToFile);
-                await JsonSerializer.SerializeAsync(fs, ordered, Options, default);
+                using var wr = new StreamWriter(fs);
+                using var jtw = new JsonTextWriter(wr);
+                JsonSerializer.Create(Settings).Serialize(jtw, ordered);
             }
 
             return ordered;
@@ -64,8 +66,10 @@ namespace MouseKeyboardRecorder
                     else if (file != null)
                     {
                         using var fs = File.OpenRead(file);
-                        actionsList = await JsonSerializer.DeserializeAsync<List<Action>>(fs, Options)
-                            ?? throw new ArgumentException("Failed to deserialize actions from file.");
+                        using var sr = new StreamReader(fs);
+                        using var jtr = new JsonTextReader(sr);
+                        actionsList = JsonSerializer.Create(Settings).Deserialize<List<Action>>(jtr)
+                            ?? throw new ArgumentException("Invalid stream provided. Serialization resulted in null.");
                     }
                     else
                     {

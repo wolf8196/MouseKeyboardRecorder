@@ -22,12 +22,16 @@ namespace MouseKeyboardRecorder
             Offset = offset;
         }
 
-        public ActionType ActionType { get; }
+        public Action()
+        {
+        }
 
-        public long Offset { get; }
+        public ActionType ActionType { get; set; }
 
-        public KeyCode? KeyCode { get; }
+        public long Offset { get; set; }
 
-        public MouseInfo? MouseInfo { get; }
+        public KeyCode? KeyCode { get; set; }
+
+        public MouseInfo? MouseInfo { get; set; }
     }
 }

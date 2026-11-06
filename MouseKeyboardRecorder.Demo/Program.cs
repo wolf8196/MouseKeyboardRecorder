@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MouseKeyboardRecorder.Tests
+namespace MouseKeyboardRecorder.Demo
 {
     internal class Program
     {

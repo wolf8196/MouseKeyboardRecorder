@@ -17,12 +17,16 @@ namespace MouseKeyboardRecorder
             ClickSequenceCounter = clickSequenceCounter;
         }
 
-        public short X { get; }
+        public MouseInfo()
+        {
+        }
 
-        public short Y { get; }
+        public short X { get; set; }
 
-        public MouseButton Button { get; }
+        public short Y { get; set; }
 
-        public ushort ClickSequenceCounter { get; }
+        public MouseButton Button { get; set; }
+
+        public ushort ClickSequenceCounter { get; set; }
     }
 }
